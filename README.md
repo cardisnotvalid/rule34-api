@@ -7,7 +7,7 @@ A Python wrapper for the Rule34 API, supporting both synchronous and asynchronou
 Install the package using pip:
 
 ```bash
-$ python3 -m pip install git+https://github/cardisnotvalid/rule34-api
+$ python3 -m pip install git+https://github.com/cardisnotvalid/rule34-api.git
 ```
 
 ## Usage
