@@ -15,5 +15,14 @@ setup(
     long_description=LONG_DESCRIPTION,
     packages=find_packages(),
     install_requires=["httpx"],
-    keywords=["python", "api", "rule34", "rule34xxx", "rule34api", "rule34-api", "api-wrapper"],
+    keywords=[
+        "python",
+        "api",
+        "api-wrapper",
+        "rule34",
+        "rule34xxx",
+        "rule34api",
+        "rule34-api",
+        "api-wrapper"
+    ],
 )
