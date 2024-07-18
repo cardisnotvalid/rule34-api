@@ -1,4 +1,5 @@
 from typing import List, Dict, Any
+
 from xml.etree import cElementTree
 from xml.etree.ElementTree import ElementTree, Element
 
@@ -13,7 +14,7 @@ class XMLParser:
 
         for element in tree.iter():
             if element.tag == "comment":
-                comment = Comment.from_dict(element.attrib)
+                comment = Comment(**element.attrib)
                 result.append(comment)
 
         return result
@@ -25,7 +26,7 @@ class XMLParser:
 
         for element in tree.iter():
             if element.tag == "tag":
-                tag = Tag.from_dict(element.attrib)
+                tag = Tag(**element.attrib)
                 result.append(tag)
 
         return result
