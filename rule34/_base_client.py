@@ -24,21 +24,22 @@ class BaseClinet(Generic[HttpxClientT]):
     def _prepare_params(
         self,
         base_params: Dict[str, str],
-        add_params: Dict[str, Any]
+        add_params: Union[Dict[str, Any], None] = None,
     ) -> Dict[str, Any]:
         xparams = {**base_params}
-        for key, value in add_params.items():
-            if value is not None:
-                if key == "tags":
-                    value = self._format_tags(value)
-                xparams[key] = value
+        if add_params:
+            for key, value in add_params.items():
+                if value is not None:
+                    if key == "tags":
+                        value = self._format_tags(value)
+                    xparams[key] = value
         return xparams
 
     def _build_request(
         self,
         method: str,
         base_params: Dict[str, str],
-        add_params: Dict[str, Any],
+        add_params: Union[Dict[str, Any], None] = None,
     ) -> Request:
         return self._client.build_request(
             method=method,
@@ -88,19 +89,28 @@ class SyncAPIClient(BaseClinet[httpx.Client]):
         if hasattr(self, "_client"):
             self._client.close()
 
-    def get(self, base_params: Dict[str, str], add_params: Dict[str, Any]) -> Response:
+    def get(
+        self,
+        base_params: Dict[str, str],
+        add_params: Union[Dict[str, Any], None] = None,
+    ) -> Response:
         return self._request("GET", base_params, add_params)
 
-    def post(self, base_params: Dict[str, str], add_params: Dict[str, Any]) -> Response:
+    def post(
+        self,
+        base_params: Dict[str, str],
+        add_params: Union[Dict[str, Any], None] = None,
+    ) -> Response:
         return self._request("POST", base_params, add_params)
 
     def _request(
         self,
         method: str,
         base_params: Dict[str, str],
-        add_params: Dict[str, Any]
+        add_params: Union[Dict[str, Any], None] = None,
     ) -> Response:
-        return self._client.send(self._build_request(method, base_params, add_params))
+        request = self._build_request(method, base_params, add_params)
+        return self._client.send(request)
 
 
 class AsyncAPIClient(BaseClinet[httpx.AsyncClient]):
@@ -120,16 +130,25 @@ class AsyncAPIClient(BaseClinet[httpx.AsyncClient]):
         if hasattr(self, "_client"):
             await self._client.aclose()
 
-    async def get(self, base_params: Dict[str, str], add_params: Dict[str, Any]) -> Response:
+    async def get(
+        self,
+        base_params: Dict[str, str],
+        add_params: Union[Dict[str, Any], None] = None,
+    ) -> Response:
         return await self._request("GET", base_params, add_params)
 
-    async def post(self, base_params: Dict[str, str], add_params: Dict[str, Any]) -> Response:
+    async def post(
+        self,
+        base_params: Dict[str, str],
+        add_params: Union[Dict[str, Any], None] = None,
+    ) -> Response:
         return await self._request("POST", base_params, add_params)
 
     async def _request(
         self,
         method: str,
         base_params: Dict[str, str],
-        add_params: Dict[str, Any]
+        add_params: Union[Dict[str, Any], None] = None,
     ) -> Response:
-        return await self._client.send(self._build_request(method, base_params, add_params))
+        request = self._build_request(method, base_params, add_params)
+        return await self._client.send(request)
