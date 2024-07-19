@@ -1,4 +1,5 @@
 from typing import Union, List
+import random
 
 import httpx
 
@@ -17,22 +18,26 @@ class Rule34(SyncAPIClient):
         *,
         limit: Union[int, None] = None,
         page: Union[int, None] = None,
-    ):
+    ) -> List[Post]:
         add_params = {"tags": tags, "limit": limit, "pid": page}
         data = self.get(self.post_params, add_params).json()
         return list(map(lambda x: Post(**x), data))
 
-    def get_post(self, post_id: int):
+    def get_post(self, post_id: int) -> Post:
         add_params = {"id": post_id}
         data = self.get(self.post_params, add_params).json()
         return Post(**data[0])
 
-    def get_comments(self, post_id: int):
+    def get_random_post(self) -> Post:
+        data = self.get(self.post_params).json()
+        return Post(**random.choice(data))
+
+    def get_comments(self, post_id: int) -> List[Comment]:
         add_params = {"post_id": post_id}
         xml_content = self.get(self.comment_params, add_params).text
         return XMLParser.parse_comments(xml_content)
 
-    def get_tags(self, *, tag_id: Union[int, None] = None):
+    def get_tags(self, *, tag_id: Union[int, None] = None) -> List[Tag]:
         add_params = {"id": tag_id}
         xml_content = self.get(self.tag_params, add_params).text
         return XMLParser.parse_tags(xml_content)
@@ -48,22 +53,26 @@ class AsyncRule34(AsyncAPIClient):
         *,
         limit: Union[int, None] = None,
         page: Union[int, None] = None,
-    ):
+    ) -> List[Post]:
         add_params = {"tags": tags, "limit": limit, "pid": page}
         data = (await self.get(self.post_params, add_params)).json()
         return list(map(lambda x: Post(**x), data))
 
-    async def get_post(self, post_id: int):
+    async def get_post(self, post_id: int) -> Post:
         add_params = {"id": post_id}
         data = (await self.get(self.post_params, add_params)).json()
         return Post(**data[0])
 
-    async def get_comments(self, post_id: int):
+    async def get_random_post(self) -> Post:
+        data = (await self.get(self.post_params)).json()
+        return Post(**random.choice(data))
+
+    async def get_comments(self, post_id: int) -> List[Comment]:
         add_params = {"post_id": post_id}
         xml_content = (await self.get(self.comment_params, add_params)).text
         return XMLParser.parse_comments(xml_content)
 
-    async def get_tags(self, *, tag_id: Union[int, None] = None):
+    async def get_tags(self, *, tag_id: Union[int, None] = None) -> List[Tag]:
         add_params = {"id": tag_id}
         xml_content = (await self.get(self.tag_params, add_params)).text
         return XMLParser.parse_tags(xml_content)
